@@ -274,5 +274,4 @@ Antes de decir que tienes el entorno listo, comprueba las seis:
 - [ ] Al ejecutarlo con `java NombreDelFichero.java`, aparece el resultado
       esperado en pantalla.
 
-Si alguna falla, es mejor resolverla ahora: todo lo demás del curso se apoya en
-estas seis.
+Si alguna falla, es mejor resolverla ahora: sin esto no podrás hacer los próximos ejercicios.
