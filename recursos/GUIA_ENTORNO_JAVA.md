@@ -230,20 +230,7 @@ Se puede, y en CO3 se hace igualmente. Lo mínimo:
 
 ## 5. Comprobación final: todo funciona junto
 
-El primer programa de prueba (qué contiene y por qué) se explica en los apuntes
-de Programación y de Contornos. Aquí solo se comprueba que el JDK, la consola y
-el editor funcionan juntos, no cómo está escrito el programa.
-
-1. Guarda el fichero de prueba que te dé el profesorado en tu carpeta de trabajo
-   (apartado 4), en texto plano y con la extensión `.java` correcta.
-2. Abre la consola **en esa carpeta** (apartado 3).
-3. Ejecútalo:
-
-   ```
-   java NombreDelFichero.java
-   ```
-
-Si en pantalla aparece el resultado que se espera, **el entorno está listo**.
+Este paso lo haremos en cuanto hagamos nuestro primer código.
 
 ### Si no sale
 
