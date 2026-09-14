@@ -178,11 +178,6 @@ C:\Users\tu-usuario\Documents\dam\
 **Todo lo del curso va aquí dentro.** No en el Escritorio, no en Descargas, no en
 una memoria USB que se te olvide en casa.
 
-> **En los equipos del aula, pregunta antes dónde se guarda.** En muchos centros el
-> disco del aula se borra al reiniciar. Si es el caso, al terminar cada clase copia
-> tu carpeta a tu espacio personal, a una nube o a un USB. **Perder el trabajo de la
-> semana pasada no es una excusa que puedas usar dos veces.**
-
 ### El editor del primer día: el Bloc de notas
 
 El primer día se usa el **Bloc de notas** de Windows. No porque sea bueno, sino
