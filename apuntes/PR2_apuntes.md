@@ -271,3 +271,177 @@ IO.println("Vida restante: " + porcentaje + " %");     // escribe: 0 %
 
 Paso a paso: `45 / 100` son dos enteros, así que da **0**. Y `0 * 100` es 0.
 
+### Las soluciones
+
+**Que uno de los dos sea decimal.** Basta con uno:
+
+```java
+7 / 2.0     →  3.5
+7.0 / 2     →  3.5
+```
+
+**Convertir con `(double)`, si son variables:**
+
+```java
+int a = 7, b = 2;
+(double) a / b      →  3.5
+```
+
+**El sitio del `(double)` importa:**
+
+```java
+(double) a / b        →  3.5     convierte a, luego divide
+(double) (a / b)      →  3.0     divide entero (da 3), luego convierte
+```
+
+En el segundo, cuando conviertes ya has perdido el decimal. **Hay que convertir
+antes de dividir.**
+
+### La trampa del `double` a la izquierda
+
+```java
+double mal = 7 / 2;
+IO.println(mal);        // escribe 3.0
+```
+
+Mucha gente espera 3.5. Pero Java calcula primero la parte derecha —`7 / 2` entre
+enteros, que da 3— y **después** lo guarda en un `double`. El `double` llega tarde.
+
+Lo correcto:
+
+```java
+double bien = 7.0 / 2;   // 3.5
+```
+
+### Convertir al revés: `(int)`
+
+```java
+(int) 3.9       →  3
+(int) -3.9      →  -3
+```
+
+**Trunca, no redondea.** Corta por el punto. Si quieres redondear de verdad, hay
+otra herramienta y la verás en PR5.
+
+### De texto a número
+
+Lo que devuelve `IO.readln` **siempre es texto**, aunque el usuario teclee un
+número. Para operar con él hay que convertirlo:
+
+```java
+int fuerza = Integer.parseInt(IO.readln("Fuerza: "));
+double peso = Double.parseDouble(IO.readln("Peso: "));
+```
+
+> Si el usuario escribe «hola», esto revienta y el programa se para. Es un problema
+> real, tiene solución, y se llama excepciones. Lo veremos en PR5. De momento, al
+> probar tus programas, teclea números.
+
+---
+
+## 6. Sacar los datos bien
+
+Concatenar con `+` funciona, pero para una tabla se queda corto:
+
+```java
+IO.println("Vida: " + vida);
+IO.println("Ataque: " + ataque);
+```
+
+sale descolocado en cuanto los números tienen distinto número de cifras.
+
+### `String.format`
+
+```java
+IO.println(String.format("%-14s %8d", "Vida", vida));
+```
+
+El primer argumento es una **plantilla** con huecos, y los demás son lo que va en
+cada hueco.
+
+| Hueco | Para | Ejemplo |
+|---|---|---|
+| `%d` | Enteros | `%5d` reserva 5 espacios, alineado a la derecha |
+| `%f` | Decimales | `%.2f` con dos decimales |
+| `%s` | Textos | `%-10s` reserva 10, alineado a la **izquierda** |
+
+El signo menos alinea a la izquierda. Sin él, a la derecha.
+
+### Un marco completo
+
+```java
+final int ANCHO = 34;
+String linea = "+" + "-".repeat(ANCHO) + "+";
+
+IO.println(linea);
+IO.println(String.format("| %-14s %17d |", "Vida", 41));
+IO.println(String.format("| %-14s %17.2f |", "Poder", 7.25));
+IO.println(linea);
+```
+
+```
++----------------------------------+
+| Vida                          41 |
+| Poder                       7.25 |
++----------------------------------+
+```
+
+`"-".repeat(34)` escribe el guion 34 veces. Ahorra contarlos a mano.
+
+---
+
+## Errores típicos
+
+| Lo que ves | Qué pasa | Cómo se arregla |
+|---|---|---|
+| Un porcentaje da 0 | División entera | `(double)` **antes** de dividir |
+| `double x = 7 / 2;` da 3.0 | Se calcula entero y se convierte después | `7.0 / 2` |
+| `possible lossy conversion` | Metes un `double` en un `int` | `(int)`, sabiendo que trunca |
+| Comparar textos con `==` no funciona | Los textos no se comparan así | `.equals()`. Se explica en PR5 |
+| `NumberFormatException` | `parseInt` de algo que no es número | Se arregla en PR5 |
+| El resultado sale con la coma rara | Estás usando `3,5` en vez de `3.5` | Punto decimal |
+| `cannot assign a value to final` | Intentas cambiar una constante | Está bien: era intocable |
+
+---
+
+## Resumen en una página
+
+```java
+final int VIDA_MAXIMA = 30;              // constante, en mayúsculas
+int vida = 30;                            // entero
+double media = 7.5;                       // decimal, con punto
+boolean vivo = true;                      // verdadero o falso
+char inicial = 'B';                       // comillas simples
+String nombre = "Brego";                  // comillas dobles
+
+vida = vida - 10;                         // "guarda en", no "es igual a"
+```
+
+| Quiero… | Escribo |
+|---|---|
+| Dividir con decimales | `(double) a / b` |
+| El resto de una división | `a % b` |
+| Quitar los decimales | `(int) x` (trunca) |
+| Convertir texto a número | `Integer.parseInt(texto)` |
+| Alinear en columnas | `String.format("%-10s %5d", txt, num)` |
+| Dos decimales | `String.format("%.2f", x)` (coma o punto **según el equipo**) |
+| Dos decimales, siempre con punto | `String.format(java.util.Locale.ROOT, "%.2f", x)` |
+| Una línea de guiones | `"-".repeat(30)` |
+
+**Las cinco reglas de oro**
+
+1. `=` guarda. `==` compara.
+2. Entero dividido entre entero da **entero**.
+3. Hay que convertir a `double` **antes** de dividir, no después.
+4. `(int)` trunca, no redondea.
+5. Ante la duda con la precedencia, **pon paréntesis**.
+
+---
+
+## Para practicar
+
+Los ejercicios están en `PR2_hoja_ejercicios.md`.
+
+El **E2.3** es especial: se hace en papel, sin ordenador, prediciendo qué vale cada
+variable. Hazlo así de verdad. Predecir y luego comprobar enseña muchísimo más que
+ejecutar y ver qué sale, porque te obliga a descubrir en qué te equivocabas.
