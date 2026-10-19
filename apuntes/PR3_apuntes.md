@@ -954,3 +954,152 @@ distancia inicial fuera 5.**
 el tope inferior de 0. Ejecuta las cuatro órdenes.
 
 **Fase 4 · el contrato.** Añade el estado con un ternario y las tres líneas finales.
+
+El programa completo:
+
+```java
+void main() {
+    int energia   = 20;
+    int maxima    = 30;
+    int distancia = 8;
+
+    String accion = IO.readln("Accion (avanzar/recargar/reposo): ").trim().toLowerCase();
+
+    // Fase 1: la accion.
+    if (accion.equals("avanzar")) {
+        distancia = distancia - 5;
+    } else if (accion.equals("recargar")) {
+        energia = energia + 8;
+        if (energia > maxima) {
+            energia = maxima;
+        }
+    }
+
+    // Fase 2: el objetivo. Si se ha alcanzado, el turno no desgasta.
+    if (distancia <= 0) {
+        distancia = 0;
+    } else {
+        // Fase 3: el desgaste.
+        int desgaste = accion.equals("reposo") ? 1 : 3;
+        energia = energia - desgaste;
+        if (energia < 0) {
+            energia = 0;
+        }
+    }
+
+    // Fase 4: el parte del turno.
+    String estado = distancia == 0 ? "objetivo" : "en marcha";
+    IO.println("Energia ..: " + energia);
+    IO.println("Distancia : " + distancia);
+    IO.println("Estado ...: " + estado);
+}
+```
+
+**Predice las cuatro antes de ejecutarlas:**
+
+| Acción | Energía | Distancia | Estado |
+|---|---|---|---|
+| `avanzar` | `17` | `3` | `en marcha` |
+| `recargar` | `25` | `8` | `en marcha` |
+| `reposo` | `19` | `8` | `en marcha` |
+| `bailar` | `17` | `8` | `en marcha` |
+
+Fíjate en `bailar`: **gasta los 3 de energía igual que `avanzar`**, aunque no haga
+nada. Está así a propósito.
+
+**El error provocado · desgaste después del objetivo.** Cambia la distancia inicial
+a `5` y ejecuta `avanzar`:
+
+| Arranque | Acción | Energía | Distancia | Estado |
+|---|---|---|---|---|
+| energía 20, distancia 5 | `avanzar` | `20` | `0` | `objetivo` |
+
+La energía **no baja**: ha llegado al objetivo y el turno no desgasta. Ahora saca el
+gasto de energía del `else` y ponlo suelto, después del `if`. Vuelve a ejecutar: sale
+energía `17`. Ese es el fallo, y es de los que no se ven leyendo, solo ejecutando.
+
+**El otro arranque que hay que probar.** Energía inicial `2`, distancia 8:
+
+| Arranque | Acción | Energía | Distancia | Estado |
+|---|---|---|---|---|
+| energía 2, distancia 8 | `avanzar` | `0` | `3` | `en marcha` |
+| energía 2, distancia 8 | `reposo` | `1` | `8` | `en marcha` |
+
+Con `avanzar`, 2 − 3 daría −1. El tope inferior lo deja en `0`. Sin ese tope saldría
+energía negativa, que no significa nada.
+
+### Ahora tú · AT-turno · el mismo turno, otro arranque
+
+Coge tu G8 y cambia solo el arranque: **energía 12, distancia 4**. Todas las reglas
+siguen igual.
+
+| Acción | Energía | Distancia | Estado |
+|---|---|---|---|
+| `avanzar` | `12` | `0` | `objetivo` |
+| `recargar` | `17` | `4` | `en marcha` |
+| `reposo` | `11` | `4` | `en marcha` |
+| `bailar` | `9` | `4` | `en marcha` |
+
+Los dos que hay que entender antes de seguir:
+
+- `avanzar` deja la energía en **12**, sin tocar: 4 − 5 da −1, se fija en 0, y el
+  objetivo alcanzado se salta el desgaste.
+- `recargar` deja **17** y no 20: suma 8 y después gasta los 3 del desgaste, porque
+  la distancia sigue siendo 4.
+
+---
+
+## Errores típicos
+
+| Lo que ves | Qué pasa |
+|---|---|
+| Se ejecuta algo que no debería | Un `;` detrás del `if` |
+| Una rama no se alcanza nunca | Las condiciones están en mal orden: de lo general a lo específico |
+| `if (x = 5)` | Es una asignación, no una comparación |
+| Comparar textos no funciona | `==` en vez de `.equals()` |
+| El menú calla ante una entrada rara | Falta la rama final |
+| `variable might not have been initialized` | Hay un camino que no le da valor: suele faltar el `else` |
+| `/ by zero` en una condición | La comprobación protectora no va la primera |
+| La clasificación miente con máximos impares | División entera donde va decimal (PR2 §5) |
+| El `switch` no compila | Falta el `;` que cierra la asignación |
+
+---
+
+## Resumen en una página
+
+```java
+if (condicion) {
+    ...
+} else if (otra) {
+    ...
+} else {
+    ...
+}
+
+String x = switch (valor) {
+    case "a" -> "resultado A";
+    default  -> "cualquier otro";
+};
+
+String y = condicion ? "si" : "no";
+```
+
+| Quiero… | Escribo |
+|---|---|
+| Comparar textos | `a.equals(b)` |
+| Limpiar antes de comparar | `a.trim().toLowerCase()` |
+| Que se cumplan las dos | `a && b` |
+| Que se cumpla alguna | `a \|\| b` |
+| Lo contrario | `!a` |
+| Agrupar bien | `(a \|\| b) && !c` |
+| Protegerme de un error | `divisor != 0 && 12 / divisor > 2` |
+| Dividir sin perder decimales | `maxima / 4.0` |
+
+**Las cinco reglas de oro**
+
+1. **Llaves siempre**, aunque el bloque sea de una línea.
+2. **Nunca un `;` detrás del `if`.**
+3. De lo más específico a lo más general: **el orden de las ramas importa**, y se
+   comprueba con las fronteras.
+4. **Un menú siempre tiene rama final.** Un aviso puede no tenerla.
+5. Textos con `.equals()`, números con `==`. Y la comprobación protectora, primera.
